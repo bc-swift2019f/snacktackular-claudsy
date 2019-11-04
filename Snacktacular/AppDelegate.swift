@@ -4,7 +4,7 @@
 //
 //  Created by John Gallaugher on 3/23/18.
 //  Copyright © 2018 John Gallaugher. All rights reserved.
-//
+
 
 import UIKit
 import Firebase
@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+
         
         GMSPlacesClient.provideAPIKey("AIzaSyB3nKdBPudPJ6xcnd7EltGO2R2XsUai8Vg")
         FirebaseApp.configure()
