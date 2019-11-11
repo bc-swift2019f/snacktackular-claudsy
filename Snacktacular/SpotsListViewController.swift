@@ -15,9 +15,13 @@ import GoogleSignIn
 
 class SpotsListViewController: UIViewController {
     
+    @IBOutlet weak var sortSegmentedControl: UISegmentedControl!
     @IBOutlet weak var tableView: UITableView!
+    
     var spots: Spots!
     var authUI: FUIAuth!
+    var locationManager: CLLocationManager!
+    var currentLocation: CLLocation!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +39,10 @@ class SpotsListViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        getLocation()
+        navigationController?.setToolbarHidden(false, animated: false)
         spots.loadData {
+            self.sortBasedOnSegmentPressed()
             self.tableView.reloadData()
         }
     }
@@ -58,6 +65,14 @@ class SpotsListViewController: UIViewController {
             }
         }
 
+    func showAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(alertAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    
 override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "ShowSpot"{
         let destination = segue.destination as! SpotDetailViewController
@@ -70,6 +85,25 @@ override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     }
 }
 
+    func sortBasedOnSegmentPressed() {
+        switch sortSegmentedControl.selectedSegmentIndex {
+        case 0: //A-Z
+            spots.spotArray.sort(by: {$0.name < $1.name})
+        case 1: // closest
+            spots.spotArray.sort(by: {$0.location.distance(from: currentLocation) < $1.location.distance(from: currentLocation)})
+        case 2: // average rating
+            print("TODO")
+        default:
+            print("*** ERROR: Hey, you should have gotten here, our segmented control should just have 3 segments")
+        }
+        tableView.reloadData()
+    }
+    
+    @IBAction func sortSegmentPressed(_ sender: UISegmentedControl) {
+        sortBasedOnSegmentPressed()
+    }
+    
+    
 @IBAction func signOutPressed(_ sender: UIBarButtonItem) {
     do {
         try authUI.signOut()
@@ -136,3 +170,38 @@ extension SpotsListViewController: FUIAuthDelegate{
     }
 }
 
+//----------------------------
+
+extension SpotsListViewController: CLLocationManagerDelegate {
+    
+    func getLocation() {
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+    }
+    
+    func handleLocationAuthorizationStatus(status: CLAuthorizationStatus) {
+        switch status {
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+        case .authorizedAlways, .authorizedWhenInUse:
+            locationManager.requestLocation()
+        case .denied:
+            print("I'm sorry - can't show location. User has not authorized it.")
+        case .restricted:
+            print("Access denied. Likely parental controls are restricting location services in this app.")
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        handleLocationAuthorizationStatus(status: status)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        currentLocation = locations.last
+        print("CURRENT LOCATION IS \(currentLocation.coordinate.longitude),\(currentLocation.coordinate.latitude)")
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Failed to get user location.")
+    }
+}
