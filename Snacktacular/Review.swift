@@ -35,8 +35,10 @@ class Review {
         let text = dictionary["text"] as! String? ?? ""
         let rating = dictionary["rating"] as! Int? ?? 0
         let reviewerUserID = dictionary["reviewerUserID"] as! String
-        let date = dictionary["date"] as! Date? ?? Date()
-        self.init(title: title, text: text, rating: rating, reviewerUserID: reviewerUserID, date: date, documentID: "")
+        let time = dictionary["date"] as! Timestamp
+        let date = time.dateValue()
+        let documentID = dictionary["documentID"] as! String ?? ""
+        self.init(title: title, text: text, rating: rating, reviewerUserID: reviewerUserID, date: date, documentID: documentID)
     }
     
     convenience init() {
@@ -45,6 +47,7 @@ class Review {
     }
     
     func saveData(spot: Spot, completed: @escaping (Bool) -> ()) {
+        print("**** \(self.documentID)")
         let db = Firestore.firestore()
         // Create the dictionary representing the data we want to save
         let dataToSave = self.dictionary

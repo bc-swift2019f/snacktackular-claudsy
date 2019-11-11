@@ -19,8 +19,8 @@ class SpotDetailViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var saveBarButton: UIBarButtonItem!
     @IBOutlet weak var cancelBarButton: UIBarButtonItem!
+    @IBOutlet weak var saveBarButton: UIBarButtonItem!
     
     var spot: Spot!
     var reviews: Reviews!
@@ -32,11 +32,13 @@ class SpotDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("Loading Detail Controller")
         
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:)))
         tap.cancelsTouchesInView = false
         self.view.addGestureRecognizer(tap)
         
+        print("Assigning Delegates")
         
         //mapView.delegate = self
         
@@ -45,6 +47,8 @@ class SpotDetailViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         imagePicker.delegate = self
+        
+        print("Check if spot is nil")
         
         if spot == nil{ //adding a new record, fields should be editable
             spot = Spot()
@@ -61,12 +65,18 @@ class SpotDetailViewController: UIViewController {
             cancelBarButton.title = ""
             navigationController?.setToolbarHidden(true, animated: true)
         }
+        
+        print("Initializing reviews and photos")
         reviews = Reviews()
         photos = Photos()
         
+        print("Creating Region")
         let region = MKCoordinateRegion(center: spot.coordinate, latitudinalMeters: regionDistance, longitudinalMeters: regionDistance)
+        print("Set Region")
         mapView.setRegion(region, animated: true)
+        print("Updating UI")
         updateUserInterface()
+        print("Updated")
     }
     
     
@@ -82,8 +92,11 @@ class SpotDetailViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        print("Loading reviews")
         reviews.loadData(spot: spot) {
+            print("Finished loading reviews")
             self.tableView.reloadData()
+            print("Reloaded tableview")
         }
     }
     

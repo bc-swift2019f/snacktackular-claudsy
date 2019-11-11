@@ -400,9 +400,11 @@
                     <connections>
                         <outlet property="addressField" destination="4WS-yq-rPw" id="P0N-6s-snq"/>
                         <outlet property="averageRatingLabel" destination="B7N-4G-a6e" id="wSr-er-pBu"/>
+                        <outlet property="cancelBarButton" destination="S5P-gk-K1R" id="eU0-Nj-bAC"/>
                         <outlet property="collectionView" destination="JfI-qt-dbd" id="hnO-GP-dfz"/>
                         <outlet property="mapView" destination="Zh2-Ha-cFc" id="L8B-Dn-1hk"/>
                         <outlet property="nameField" destination="4QE-cW-8Sq" id="mlK-Cz-ISL"/>
+                        <outlet property="saveBarButton" destination="lI7-oK-qeu" id="gFP-ai-xvD"/>
                         <outlet property="tableView" destination="9OL-9e-xjv" id="3bb-n3-fTc"/>
                         <segue destination="pNm-Jg-UAh" kind="presentation" identifier="AddReview" id="Y3T-bx-7iN"/>
                     </connections>
@@ -700,14 +702,14 @@
                     <connections>
                         <outlet property="addressLabel" destination="qy9-0q-Ueh" id="eOg-O0-yl0"/>
                         <outlet property="buttonsBackgroundView" destination="bvT-Zc-S06" id="FWS-xP-uJa"/>
-                        <outlet property="cancelBarButton" destination="uK3-sj-Eqc" id="rb4-is-V8j"/>
+                        <outlet property="cancelBarButton" destination="uK3-sj-Eqc" id="3sw-Sq-8r2"/>
                         <outlet property="deleteButton" destination="LBJ-iU-VMd" id="3GC-Gi-FLf"/>
                         <outlet property="nameLabel" destination="nHZ-ps-6YK" id="u26-oX-llL"/>
                         <outlet property="postedByLabel" destination="IKe-yv-4rL" id="T24-Zf-WGf"/>
                         <outlet property="reviewDateLabel" destination="1q8-Lk-LgM" id="SVw-hH-VUd"/>
                         <outlet property="reviewTitle" destination="hUN-Is-oFs" id="v47-SZ-5Z9"/>
                         <outlet property="reviewView" destination="tsF-4y-b4y" id="STU-hF-D1a"/>
-                        <outlet property="saveBarButton" destination="v8P-zV-aIT" id="jfy-gB-sir"/>
+                        <outlet property="saveBarButton" destination="v8P-zV-aIT" id="GQ3-R2-nOX"/>
                         <outletCollection property="starButtonCollection" destination="gp2-Bd-408" collectionClass="NSMutableArray" id="8Gc-bJ-Azh"/>
                         <outletCollection property="starButtonCollection" destination="rrK-hs-egX" collectionClass="NSMutableArray" id="mg9-xM-hAx"/>
                         <outletCollection property="starButtonCollection" destination="4X5-bQ-eR4" collectionClass="NSMutableArray" id="oVm-9W-6Zk"/>
