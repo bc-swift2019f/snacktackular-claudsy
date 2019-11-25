@@ -60,7 +60,9 @@ class Review {
                     completed(false)
                 } else {
                     print("^^^ Document updated with ref ID \(ref.documentID)")
-                    completed(true)
+                    spot.updateAverageRating {
+                        completed(true)
+                    }
                 }
             }
         } else {
@@ -71,9 +73,28 @@ class Review {
                     completed(false)
                 } else {
                     print("^^^ New document created with ref ID \(ref?.documentID ?? "unknown")")
-                    completed(true)
+                    spot.updateAverageRating {
+                        completed(true)
+                    }
                 }
             }
+        }
+    }
+    
+    func deleteDate(spot: Spot, completed: @escaping (Bool) -> ()){
+        let db = Firestore.firestore()
+        db.collection("spots").document(spot.documentID).collection("reviews").document(documentID).delete(){ error in
+            if let error = error{
+                print("ERROR: deleting reviewed documentID \(self.documentID) \(error.localizedDescription)")
+                completed(false)
+            }
+            else{
+                spot.updateAverageRating {
+                    completed(true)
+                }
+                completed(true)
+            }
+            
         }
     }
     

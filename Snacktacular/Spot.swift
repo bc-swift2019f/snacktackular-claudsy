@@ -19,6 +19,7 @@ class Spot: NSObject, MKAnnotation {
     var numberOfReviews: Int
     var postingUserID: String
     var documentID: String
+    
     var longitude: CLLocationDegrees{
         return coordinate.longitude
     }
@@ -94,14 +95,42 @@ class Spot: NSObject, MKAnnotation {
             var ref: DocumentReference? = nil //let firestore create the new documentID
             ref = db.collection("spots").addDocument(data: dataToSave) {error in
                 if let error = error{
-                    print("***ERROR: Updated document \(self.documentID)\(error.localizedDescription)")
+                    print("*** ERROR: Updated document \(self.documentID)\(error.localizedDescription)")
                     completed(false)
                 } else{
                     print("^^^ New document created with ref ID\(ref?.documentID ?? "unknown")")
+                    self.documentID = ref!.documentID
                     completed(true)
                 }
             }
         }
     }
-    
+    func updateAverageRating(completed: @escaping () -> ()){
+        let db = Firestore.firestore()
+        let reviewRef = db.collection("spots").document(self.documentID).collection("reviews")
+        reviewRef.getDocuments{ (querySnapshot, error) in
+            guard error == nil else{
+                print("***ERROR: failed to get query snapshot of reviewsref: \(reviewRef.path), ERROR \(error!.localizedDescription)")
+                return completed()
+            }
+            var ratingTotal = 0.0
+            for document in querySnapshot!.documents{ //go throught all of the reviews documents
+                let reviewDictionary = document.data()
+                let rating = reviewDictionary["rating"] as! Int? ?? 0
+                ratingTotal = ratingTotal + Double(rating)
+            }
+            self.averageRating = ratingTotal / Double(querySnapshot!.count)
+            self.numberOfReviews = querySnapshot!.count
+            let dataToSave = self.dictionary
+            let spotRef = db.collection("spots").document(self.documentID)
+            spotRef.setData(dataToSave){ error in  // save it and check errors
+                guard error == nil else{
+                    print("***ERROR: Updating document\(self.documentID) in spot after changing averageReview and numberOfReviews, error:  \(error!.localizedDescription)")
+                    return completed()
+                }
+                print("Document updated w ref id \(self.documentID)")
+                completed()
+            }
+        }
+    }
 }
